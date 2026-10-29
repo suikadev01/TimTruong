@@ -13,7 +13,7 @@ import { join } from "node:path";
 
 const SITE_URL = "https://timtruong.app";
 const API_BASE_URL =
-	process.env.SITEMAP_API_URL ||
+	process.env.SITE_URL ||
 	process.env.VITE_API_URL ||
 	"http://localhost:5309";
 const OUTPUT = join(import.meta.dirname, "..", "public", "sitemap.xml");
@@ -39,7 +39,7 @@ async function fetchUniversityPaths(): Promise<string[]> {
 	} catch (err) {
 		console.warn(
 			`[sitemap] Không lấy được danh sách trường từ ${API_BASE_URL} (${err}). ` +
-				"Chỉ ghi các route tĩnh.",
+			"Chỉ ghi các route tĩnh.",
 		);
 		return [];
 	}
