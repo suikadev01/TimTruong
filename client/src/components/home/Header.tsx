@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, Search, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../ui/button";
 
@@ -24,12 +24,12 @@ const Header = () => {
 
 				{/* Desktop Navigation */}
 				<nav className="hidden lg:flex items-center space-x-8">
-					<Link
+					{/* <Link
 						to="/tim-kiem"
 						className="text-muted-foreground hover:text-primary hover:bg-accent px-3 py-2 rounded-md transition-colors duration-200"
 					>
 						Tìm trường theo điểm
-					</Link>
+					</Link> */}
 					<Link
 						to="/danh-sach-truong"
 						className="text-muted-foreground hover:text-primary hover:bg-accent px-3 py-2 rounded-md transition-colors duration-200"
@@ -47,7 +47,7 @@ const Header = () => {
 				{/* Right side actions */}
 				<div className="flex items-center space-x-2 sm:space-x-4">
 					{/* Desktop CTA button */}
-					<Button
+					{/* <Button
 						asChild
 						className="hidden sm:flex hover:bg-primary/80 hover:shadow-md transition-all duration-200"
 					>
@@ -55,10 +55,10 @@ const Header = () => {
 							<Search className="h-6 w-6" />
 							Tìm trường ngay
 						</Link>
-					</Button>
+					</Button> */}
 
 					{/* Mobile CTA button (icon only on very small screens) */}
-					<Button
+					{/* <Button
 						asChild
 						size="sm"
 						className="sm:hidden hover:bg-primary/80 transition-all duration-200"
@@ -67,7 +67,7 @@ const Header = () => {
 							<Search className="h-6 w-6" />
 							Tìm trường ngay
 						</Link>
-					</Button>
+					</Button> */}
 
 					{/* Mobile menu toggle button */}
 					<Button
@@ -90,12 +90,12 @@ const Header = () => {
 			{mobileMenuOpen && (
 				<div className="lg:hidden border-t border-border">
 					<nav className="flex flex-col space-y-1 px-4 py-3 bg-background">
-						<Link
+						{/* <Link
 							to="/tim-kiem"
 							className="text-muted-foreground hover:text-primary hover:bg-accent px-3 py-2 rounded-md transition-colors duration-200"
 						>
 							Tìm trường theo điểm
-						</Link>
+						</Link> */}
 						<Link
 							to="/danh-sach-truong"
 							className="text-muted-foreground hover:text-primary hover:bg-accent px-3 py-3 rounded-md transition-colors duration-200"
