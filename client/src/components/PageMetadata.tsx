@@ -1,3 +1,5 @@
+import { useLocation } from "@tanstack/react-router";
+
 const SITE_URL = "https://timtruong.app";
 // Brand shown in titles/og:site_name. Kept separate from the domain (SITE_URL)
 // so a future domain change (e.g. .net/.com) doesn't touch the brand text.
@@ -5,17 +7,9 @@ const SITE_NAME = "TimTruong";
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
 
 /** Build an absolute URL on the production domain from a path or full URL. */
-function toAbsoluteUrl(input?: string): string {
-	if (input) {
-		// Already absolute → keep as-is; otherwise prefix the site origin.
-		return input.startsWith("http") ? input : `${SITE_URL}${input}`;
-	}
-	// Fall back to the current path (client-side only).
-	const path =
-		typeof window !== "undefined"
-			? window.location.pathname + window.location.search
-			: "/";
-	return `${SITE_URL}${path}`;
+function toAbsoluteUrl(input: string): string {
+	// Already absolute → keep as-is; otherwise prefix the site origin.
+	return input.startsWith("http") ? input : `${SITE_URL}${input}`;
 }
 
 interface PageMetadataProps {
@@ -38,7 +32,9 @@ const PageMetadata = ({
 	noindex = false,
 }: PageMetadataProps) => {
 	const fullTitle = `${title} - ${SITE_NAME}`;
-	const canonicalUrl = toAbsoluteUrl(url);
+	// Router location works on the server too (window doesn't exist there).
+	const location = useLocation();
+	const canonicalUrl = toAbsoluteUrl(url ?? location.pathname + location.searchStr);
 	const ogImage = image ? toAbsoluteUrl(image) : DEFAULT_IMAGE;
 
 	return (

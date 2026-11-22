@@ -9,7 +9,13 @@ import SearchPage from "@/pages/SearchPage";
 // .catch(undefined) means: if a param value is invalid, silently drop it
 // rather than crashing (e.g. /tim-kiem?examType=INVALID → examType: undefined).
 const searchSchema = z.object({
-	score: z.string().optional(),
+	// The router parses `?score=24` as the number 24 (it JSON-parses values), while
+	// the app itself writes `?score=%2224%22`. Accept both and keep it a string.
+	score: z
+		.union([z.string(), z.number()])
+		.transform(String)
+		.optional()
+		.catch(undefined),
 	examType: z.enum(["THPTQG", "ĐGNL"]).optional().catch(undefined),
 	subject: z.string().optional(),
 });
