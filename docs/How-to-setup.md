@@ -62,9 +62,8 @@ Connect `TimTruong.ApiService` to it via its own user-secrets (separate secret s
 ```shell
 cd TimTruong.ApiService
 
-# Get the auto-generated Postgres password from AppHost's secrets:
-cd ../TimTruong.AppHost && dotnet user-secrets list   # → Parameters:postgres-password
-cd ../TimTruong.ApiService
+# Get the auto-generated Postgres password (Aspire 17 stores it outside dotnet user-secrets):
+grep postgres-password ~/.aspire/secrets/42e67c03-d051-4e37-8bd4-82c0acd10361/Development.json
 
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" \
   "Host=localhost;Port=5432;Database=timtruongdb;Username=postgres;Password=<paste-password-here>"
@@ -72,6 +71,13 @@ dotnet user-secrets set "ConnectionStrings:DefaultConnection" \
 dotnet run
 ```
 API is now at `http://localhost:5309`.
+
+### Tests
+Run from `server/`:
+```shell
+dotnet test --solution TimTruong.slnx
+```
+xUnit v3 runs on Microsoft.Testing.Platform (opted in via `server/global.json`), so the solution must be passed with `--solution`.
 
 ### Database Migrations
 Run from `server/TimTruong.ApiService/`:
@@ -101,11 +107,11 @@ Nested objects merge by key across providers (a later file only overrides the ke
 ### AppHost (Development only)
 PostgreSQL is fully defined in code (`AppHost.cs`) — data volume, fixed non-proxied host port `5432`, persistent container lifetime. There's no built-in override to point it at a remote database; to do that you'd edit `AppHost.cs` directly.
 
-The Postgres password is auto-generated once by Aspire and persisted to `TimTruong.AppHost`'s own user-secrets (`Parameters:postgres-password`) — it does **not** change between runs. Read it with:
+The Postgres password is auto-generated once by Aspire and persisted as `Parameters:postgres-password` in `~/.aspire/secrets/42e67c03-d051-4e37-8bd4-82c0acd10361/Development.json` (the folder name is the AppHost's `UserSecretsId`). It does **not** change between runs. Read it with:
 ```shell
-cd server/TimTruong.AppHost
-dotnet user-secrets list
+grep postgres-password ~/.aspire/secrets/42e67c03-d051-4e37-8bd4-82c0acd10361/Development.json
 ```
+> Since Aspire 17 it is no longer stored in `dotnet user-secrets` — `dotnet user-secrets list` in `TimTruong.AppHost` shows nothing.
 
 ### Frontend
 `client/.env` (copy from `.env.example`):
@@ -117,30 +123,14 @@ If not set, the frontend falls back to `http://localhost:5309` (the standalone A
 
 ## ETL Process
 
-Python scripts in `etl/` (uv project, requires Python 3.14). Data files live under `etl/data/`.
+Python scripts in `etl/` load the CSV data into the database (and extract new data from images with a Vision-LLM). See **[ETL command reference](ETL.md)**.
 
-### Step 1: Configure environment
+Quick start (local DB, after AppHost has run once):
 ```shell
 cd etl
-cp .env.example .env
+cp .env.example .env          # then set POSTGRES_* (see ETL.md for the local Aspire values)
+uv run etl_universities.py && uv run etl_majors.py && uv run etl_admissions.py \
+  && uv run etl_dormitories.py && uv run etl_rankings.py
 ```
-
-### Step 2: Run the pipelines (uv handles the venv automatically)
-```shell
-uv run etl_universities.py     # data/_shared/universities.csv → Universities
-uv run etl_majors.py           # data/schools/{Code}-{Short}/majors/{Year}.csv → Majors + MajorYears
-uv run etl_dormitories.py      # data/_shared/dormitories.csv → Dormitories
-uv run etl_rankings.py         # data/_shared/university_rankings.csv → UniversityRankings
-```
-Run `etl_universities.py` before `etl_majors.py` — majors link to universities by code.
-
-### Admission scores (điểm chuẩn) — image → CSV → DB, run once per year
-```shell
-uv run extract_admissions.py [TARGET ...] [--note "..."]   # images → scores.csv (Vision-LLM)
-# review/edit scores.csv manually, then:
-uv run etl_admissions.py [TARGET ...]                       # scores.csv → AdmissionRequirements
-```
-`TARGET` filters to a school/year (`SCHOOL`, `SCHOOL/YEAR`, or `SCHOOL-YEAR`); omit for all. Needs majors loaded first.
 
 ---
-

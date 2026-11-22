@@ -13,8 +13,7 @@ public static class RecommendationEndpoints
     public static void MapRecommendationEndpoints(this IEndpointRouteBuilder routes)
     {
         var group = routes.MapGroup("/api/v1/recommendations")
-            .WithTags("Recommendations")
-            .WithOpenApi();
+            .WithTags("Recommendations");
 
         group.MapPost("/", GetRecommendations)
             .WithName("GetRecommendations")

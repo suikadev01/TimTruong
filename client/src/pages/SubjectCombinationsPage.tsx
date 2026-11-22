@@ -1,15 +1,9 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
-	type ColumnDef,
 	type ExpandedState,
-	type FilterFn,
 	flexRender,
-	getCoreRowModel,
-	getExpandedRowModel,
-	getFilteredRowModel,
-	getSortedRowModel,
 	type SortingState,
-	useReactTable,
+	useTable,
 } from "@tanstack/react-table";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
@@ -25,6 +19,11 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import {
+	type AppColumnDef,
+	type AppFilterFn,
+	tableFeaturesDefault,
+} from "@/lib/table";
 import { cn, normalizeVi } from "@/lib/utils";
 import {
 	fetchSubjectCombinationDetail,
@@ -35,7 +34,7 @@ import type {
 	SubjectCombinationSummary,
 } from "@/types";
 
-const subjectFilter: FilterFn<SubjectCombinationSummary> = (
+const subjectFilter: AppFilterFn<SubjectCombinationSummary> = (
 	row,
 	_columnId,
 	filterValue: string,
@@ -98,7 +97,7 @@ const SubjectCombinationsPage = () => {
 		});
 	}, []);
 
-	const columns = useMemo<ColumnDef<SubjectCombinationSummary>[]>(
+	const columns = useMemo<AppColumnDef<SubjectCombinationSummary>[]>(
 		() => [
 			{
 				id: "expander",
@@ -163,7 +162,8 @@ const SubjectCombinationsPage = () => {
 		[],
 	);
 
-	const table = useReactTable({
+	const table = useTable({
+		features: tableFeaturesDefault,
 		data: combinations,
 		columns,
 		state: {
@@ -176,10 +176,6 @@ const SubjectCombinationsPage = () => {
 		onGlobalFilterChange: setGlobalFilter,
 		onExpandedChange: setExpanded,
 		globalFilterFn: subjectFilter,
-		getCoreRowModel: getCoreRowModel(),
-		getSortedRowModel: getSortedRowModel(),
-		getFilteredRowModel: getFilteredRowModel(),
-		getExpandedRowModel: getExpandedRowModel(),
 	});
 
 	return (
@@ -332,7 +328,7 @@ const SubjectCombinationsPage = () => {
 																		: undefined
 																}
 															>
-																{row.getVisibleCells().map((cell) => (
+																{row.getAllCells().map((cell) => (
 																	<TableCell key={cell.id}>
 																		{flexRender(
 																			cell.column.columnDef.cell,

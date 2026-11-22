@@ -8,8 +8,7 @@ public static class SubjectCombinationEndpoints
     public static void MapSubjectCombinationEndpoints(this IEndpointRouteBuilder routes)
     {
         var group = routes.MapGroup("/api/v1/subject-combinations")
-            .WithTags("SubjectCombinations")
-            .WithOpenApi();
+            .WithTags("SubjectCombinations");
 
         // GET /api/v1/subject-combinations
         group.MapGet("/", GetAll)

@@ -9,8 +9,7 @@ public static class CampusEndpoints
     public static void MapCampusEndpoints(this IEndpointRouteBuilder routes)
     {
         var group = routes.MapGroup("api/v1/campuses")
-            .WithTags("Campus")
-            .WithOpenApi();
+            .WithTags("Campus");
 
         // GET /api/v1/campuses
         group.MapGet("/", GetAllCampuses)

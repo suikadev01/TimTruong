@@ -5,7 +5,7 @@
 namespace TimTruong.ApiService.Migrations
 {
     /// <inheritdoc />
-    public partial class addsomesubjectcombination : Migration
+    public partial class AddSomeSubjectCombination : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

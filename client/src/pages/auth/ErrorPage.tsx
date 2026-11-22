@@ -1,11 +1,11 @@
-import { useRouter } from "@tanstack/react-router";
+import { type ErrorComponentProps, useRouter } from "@tanstack/react-router";
 import PageMetadata from "@/components/PageMetadata";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 // TanStack Router passes { error, reset } to error components.
 // reset() re-runs the failed route (retry). No need for window.location hacks.
-const ErrorPage = ({ error, reset }: { error: Error; reset: () => void }) => {
+const ErrorPage = ({ error, reset }: ErrorComponentProps) => {
 	const router = useRouter();
 
 	return (
@@ -19,7 +19,7 @@ const ErrorPage = ({ error, reset }: { error: Error; reset: () => void }) => {
 						</CardTitle>
 					</CardHeader>
 					<CardContent className="space-y-4">
-						<p className="text-center text-muted-foreground">{error.message}</p>
+						<p className="text-center text-muted-foreground">{error instanceof Error ? error.message : String(error)}</p>
 						<div className="flex gap-3 justify-center">
 							<Button onClick={reset} variant="outline" className="px-6">
 								Thử lại
