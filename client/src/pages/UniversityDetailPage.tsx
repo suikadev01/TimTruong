@@ -757,7 +757,8 @@ const UniversityDetailPage = () => {
 						? `Thông tin tuyển sinh, học phí và danh sách ngành học của ${university.name}`
 						: "Chi tiết trường đại học"
 				}
-				image={university?.imageUrl ?? undefined}
+				// Generated at build time by scripts/generate-og-images.ts.
+				image={university?.imageUrl ? `/og/${slug}.png` : undefined}
 			/>
 			{university && (
 				<JsonLd
@@ -769,7 +770,9 @@ const UniversityDetailPage = () => {
 							alternateName: university.englishName,
 						}),
 						url: `https://timtruong.app/danh-sach-truong/${slug}`,
-						...(university.imageUrl && { logo: university.imageUrl }),
+						...(university.imageUrl && {
+							logo: `https://timtruong.app${university.imageUrl}`,
+						}),
 					}}
 				/>
 			)}
