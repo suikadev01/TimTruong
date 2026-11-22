@@ -1,0 +1,27 @@
+{
+	// Type-checks the Cloudflare Worker entry with Workers runtime types
+	// (HTMLRewriter, Fetcher, ...) instead of the browser DOM types used by src/.
+	"compilerOptions": {
+		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.worker.tsbuildinfo",
+		"target": "ES2022",
+		"lib": ["ES2022"],
+		"types": ["@cloudflare/workers-types"],
+		"module": "ESNext",
+		"skipLibCheck": true,
+
+		/* Bundler mode */
+		"moduleResolution": "bundler",
+		"verbatimModuleSyntax": true,
+		"moduleDetection": "force",
+		"noEmit": true,
+
+		/* Linting */
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"erasableSyntaxOnly": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUncheckedSideEffectImports": true
+	},
+	"include": ["worker"]
+}

@@ -23,6 +23,6 @@ Features__EnableAutoMigrations=true
 cd client
 bun run deploy   # build + wrangler deploy
 ```
-Set `API_BASE_URL` in `wrangler.jsonc` to the production API URL — `worker/index.ts` uses it to inject per-university Open Graph meta for social crawlers. The client is a TanStack Start app: the Worker server-renders every page, and Cloudflare serves the built assets (`dist/client`) directly. `vite build` generates the real deploy config in `dist/server/wrangler.json`, and `wrangler deploy` finds it through `.wrangler/deploy/config.json`, so don't pass `--config`. Run `npx wrangler deploy --dry-run` after a build to check what will be uploaded.
+Set `API_BASE_URL` in `wrangler.jsonc` to the production API URL — `worker/index.ts` uses it to inject per-university Open Graph meta for social crawlers. The client is a TanStack Start app: the Worker server-renders every page, and Cloudflare serves the built assets (`dist/client`) directly. `vite build` generates the real deploy config in `dist/server/wrangler.json`, and `wrangler deploy` finds it through `.wrangler/deploy/config.json`, so don't pass `--config`. Run `npx wrangler deploy --dry-run` after a build to check what will be uploaded. The build calls the API (`SITEMAP_API_URL` or `VITE_API_URL`) to generate the sitemap and link-preview images, so after loading new universities with the ETL, rebuild and redeploy the client.
 
 ---

@@ -8,6 +8,11 @@
 		"enabled": true
 	},
 	"compatibility_flags": ["nodejs_compat"],
+	// The Cloudflare Vite plugin sets the directory; the binding lets the Worker
+	// check whether a generated preview image exists (worker/index.ts).
+	"assets": {
+		"binding": "ASSETS"
+	},
 	"vars": {
 		"API_BASE_URL": "https://api.timtruong.app"
 	}

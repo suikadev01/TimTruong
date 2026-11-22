@@ -115,6 +115,15 @@ Render `<script type="application/ld+json">`. Đã gắn: `Organization` + `WebS
 trường từ API rồi ghi đè `<title>` + `og:*`/`twitter:*` trong HTML do TanStack Start render → Facebook/Zalo hiển
 thị đúng tên trường + ảnh. Cần đặt `API_BASE_URL` trong `wrangler.jsonc`.
 
+### 2.5b Ảnh share (OG image)
+`scripts/generate-og-images.ts` chạy trong `bun run build`: tạo ảnh PNG 1200×630 cho từng
+trường (logo ở giữa nền trắng + logo TimTruong ở góc) vào `public/og/{slug}.png` (git-ignore,
+tạo lại mỗi lần build), và `public/og-image.png` mặc định (chỉ tạo khi chưa có, có commit;
+muốn dùng ảnh tự thiết kế thì cứ ghi đè file này). Lý do: logo gốc có SVG/AVIF và kích thước
+lung tung, Facebook/Zalo không đọc được hoặc cắt xấu. Worker trỏ `og:image` tới
+`/og/{slug}.png`; trường mới thêm sau lần build cuối chưa có ảnh → tự dùng ảnh mặc định.
+**Thêm trường mới qua ETL → build + deploy lại** để có ảnh (và sitemap) cho trường đó.
+
 ### 2.6 URL slug
 Trang chi tiết dùng slug (`dai-hoc-khoa-hoc-tu-nhien-hcmus`) thay ID. Slug sinh ở ETL
 (`data/slugify.py`) và backend (`SlugGenerator.cs`) — **hai bản phải đồng bộ thuật toán**. Tra
@@ -125,7 +134,7 @@ cứu qua endpoint `GET /api/v1/universities/by-slug/{slug}`.
 ## 3. Những gì CẦN làm (việc còn lại / tồn đọng)
 
 ### 3.1 Bắt buộc để các tính năng trên hoạt động đầy đủ
-- [ ] **Tạo ảnh share** `client/public/og-image.png` (1200×630) — hiện đang trỏ tới file chưa có.
+- [x] **Tạo ảnh share** `client/public/og-image.png` (1200×630) — đã tạo tự động từ `logo.svg` (mục 2.5b); có thể thay bằng ảnh tự thiết kế.
 - [ ] **Đặt `API_BASE_URL`** thật trong `client/wrangler.jsonc` (đang là placeholder
       `https://api.timtruong.app`).
 - [ ] **Chạy migration + ETL** để dữ liệu có `Slug`: `dotnet ef database update`, rồi
@@ -268,6 +277,7 @@ tự đọc qua JS) thì **không cần**.
 | robots.txt | `client/public/robots.txt` |
 | Sinh sitemap | `client/scripts/generate-sitemap.ts` (chạy trong `bun run build`) |
 | Worker inject OG | `client/worker/index.ts`, `client/wrangler.jsonc` |
+| Sinh ảnh share (OG) | `client/scripts/generate-og-images.ts` (chạy trong `bun run build`) |
 | Slug (data) | `data/slugify.py` |
 | Slug (server) | `server/TimTruong.ApiService/Utils/SlugGenerator.cs` |
 | Build client | `cd client && bun run build` |
