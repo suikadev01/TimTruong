@@ -12,8 +12,7 @@ public static class UniversityEndpoints
     public static void MapUniversityEndpoints(this IEndpointRouteBuilder routes)
     {
         var group = routes.MapGroup("/api/v1/universities")
-            .WithTags("Universities")
-            .WithOpenApi();
+            .WithTags("Universities");
 
         // GET /api/v1/universities
         group.MapGet("/", GetAllUniversities)

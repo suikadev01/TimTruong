@@ -9,15 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ToHopMonRouteImport } from './routes/to-hop-mon'
-import { Route as TimKiemRouteImport } from './routes/tim-kiem'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TimKiemRouteImport } from './routes/tim-kiem'
+import { Route as ToHopMonRouteImport } from './routes/to-hop-mon'
 import { Route as DanhSachTruongIndexRouteImport } from './routes/danh-sach-truong.index'
 import { Route as DanhSachTruongSlugRouteImport } from './routes/danh-sach-truong.$slug'
 
-const ToHopMonRoute = ToHopMonRouteImport.update({
-  id: '/to-hop-mon',
-  path: '/to-hop-mon',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TimKiemRoute = TimKiemRouteImport.update({
@@ -25,9 +25,9 @@ const TimKiemRoute = TimKiemRouteImport.update({
   path: '/tim-kiem',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ToHopMonRoute = ToHopMonRouteImport.update({
+  id: '/to-hop-mon',
+  path: '/to-hop-mon',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DanhSachTruongIndexRoute = DanhSachTruongIndexRouteImport.update({
@@ -97,11 +97,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/to-hop-mon': {
-      id: '/to-hop-mon'
-      path: '/to-hop-mon'
-      fullPath: '/to-hop-mon'
-      preLoaderRoute: typeof ToHopMonRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tim-kiem': {
@@ -111,11 +111,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TimKiemRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/to-hop-mon': {
+      id: '/to-hop-mon'
+      path: '/to-hop-mon'
+      fullPath: '/to-hop-mon'
+      preLoaderRoute: typeof ToHopMonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/danh-sach-truong/': {

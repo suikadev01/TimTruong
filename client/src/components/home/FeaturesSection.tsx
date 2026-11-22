@@ -182,7 +182,6 @@ function TrendVignette() {
 					<p className="mb-1 text-xs font-semibold uppercase tracking-[0.04em] text-muted-foreground">
 						Xu hướng điểm chuẩn · Khoa học máy tính
 					</p>
-					{/* biome-ignore lint/a11y/noSvgWithoutTitle: decorative marketing vignette */}
 					<svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full" aria-hidden>
 						{[0, 0.5, 1].map((t) => (
 							<line

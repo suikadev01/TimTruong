@@ -38,7 +38,7 @@ jobs:
         run: dotnet build TimTruong.slnx -c Release --no-restore
 
       - name: Test
-        run: dotnet test TimTruong.slnx -c Release --no-build
+        run: dotnet test --solution TimTruong.slnx -c Release --no-build
 
   docker:
     name: Docker image build

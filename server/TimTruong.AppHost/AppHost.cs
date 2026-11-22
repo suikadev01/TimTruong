@@ -11,7 +11,7 @@ var postgres = builder.AddPostgres("postgres")
 
 var database = postgres.AddDatabase("timtruongdb");
 
-var apiService =builder.AddProject<Projects.TimTruong_ApiService>("apiservice")
+var apiService = builder.AddDotnetProject("apiservice", "../TimTruong.ApiService/TimTruong.ApiService.csproj")
     .WithReference(database)
     .WaitFor(postgres)
     .WithHttpHealthCheck("/health");

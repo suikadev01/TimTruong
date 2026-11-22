@@ -12,7 +12,7 @@ namespace TimTruong.ApiService.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20260601122938_add some subject combination")]
-    partial class addsomesubjectcombination
+    partial class AddSomeSubjectCombination
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

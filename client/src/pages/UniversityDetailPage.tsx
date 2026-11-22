@@ -1,17 +1,9 @@
 import { Link, useParams } from "@tanstack/react-router";
 import {
-	type Column,
-	type ColumnDef,
 	type ExpandedState,
-	type FilterFn,
 	flexRender,
-	getCoreRowModel,
-	getExpandedRowModel,
-	getFilteredRowModel,
-	getSortedRowModel,
-	type Row,
 	type SortingState,
-	useReactTable,
+	useTable,
 } from "@tanstack/react-table";
 import {
 	ArrowDown,
@@ -61,6 +53,13 @@ import {
 	latestTuition,
 	majorTuition,
 } from "@/lib/majors";
+import {
+	type AppColumn,
+	type AppColumnDef,
+	type AppFilterFn,
+	type AppRow,
+	tableFeaturesDefault,
+} from "@/lib/table";
 import { cn, normalizeVi } from "@/lib/utils";
 import { Route } from "@/routes/danh-sach-truong.$slug";
 import { fetchUniversityBySlug, fetchUniversityMajors } from "@/services/api";
@@ -285,7 +284,7 @@ const SortableHeader = ({
 	label,
 	className,
 }: {
-	column: Column<MajorWithRequirements>;
+	column: AppColumn<MajorWithRequirements>;
 	label: string;
 	className?: string;
 }) => {
@@ -313,7 +312,7 @@ const SortableHeader = ({
 };
 
 // Search by major name + code, diacritic-insensitive (mirrors SubjectCombinationsPage).
-const majorFilter: FilterFn<MajorWithRequirements> = (
+const majorFilter: AppFilterFn<MajorWithRequirements> = (
 	row,
 	_columnId,
 	filterValue: string,
@@ -379,7 +378,7 @@ const TuitionCell = ({ major }: { major: MajorWithRequirements }) => {
 	);
 };
 
-const majorColumns: ColumnDef<MajorWithRequirements>[] = [
+const majorColumns: AppColumnDef<MajorWithRequirements>[] = [
 	{
 		id: "name",
 		accessorFn: (m) => m.name,
@@ -505,7 +504,7 @@ const MajorTableRow = ({
 	columnCount,
 	highlighted,
 }: {
-	row: Row<MajorWithRequirements>;
+	row: AppRow<MajorWithRequirements>;
 	columnCount: number;
 	highlighted?: boolean;
 }) => {
@@ -522,7 +521,7 @@ const MajorTableRow = ({
 				)}
 				onClick={canExpand ? row.getToggleExpandedHandler() : undefined}
 			>
-				{row.getVisibleCells().map((cell) => {
+				{row.getAllCells().map((cell) => {
 					const meta = cell.column.columnDef.meta as
 						| { align?: string; hideOnMobile?: boolean }
 						| undefined;
@@ -595,7 +594,8 @@ const MajorsTable = ({
 
 	const columns = useMemo(() => majorColumns, []);
 
-	const table = useReactTable({
+	const table = useTable({
+		features: tableFeaturesDefault,
 		data: majors,
 		columns,
 		state: { sorting, globalFilter, expanded },
@@ -608,10 +608,6 @@ const MajorsTable = ({
 		getRowCanExpand: (row) =>
 			row.original.admissionRequirements.length > 0 ||
 			row.original.years.length >= 2,
-		getCoreRowModel: getCoreRowModel(),
-		getSortedRowModel: getSortedRowModel(),
-		getFilteredRowModel: getFilteredRowModel(),
-		getExpandedRowModel: getExpandedRowModel(),
 	});
 
 	const rows = table.getRowModel().rows;
