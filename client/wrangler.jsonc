@@ -2,14 +2,10 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "timtruong",
 	"main": "worker/index.ts",
-	"compatibility_date": "2025-09-27",
+	"upload_source_maps": true,
+	"compatibility_date": "2026-11-22",
 	"observability": {
 		"enabled": true
-	},
-	"assets": {
-		"directory": "dist",
-		"binding": "ASSETS",
-		"not_found_handling": "single-page-application"
 	},
 	"compatibility_flags": ["nodejs_compat"],
 	"vars": {

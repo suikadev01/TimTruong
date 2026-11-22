@@ -1,17 +1,17 @@
 /**
- * Cloudflare Worker that serves the SPA assets and, for university detail
- * pages, injects per-page Open Graph / Twitter meta into the static HTML shell.
+ * Cloudflare Worker entry: TanStack Start renders every page (SSR); static
+ * assets are served by Cloudflare before the Worker runs.
  *
- * Why: the SPA renders meta client-side via React, which Google sees (it runs
- * JS) but social crawlers (Facebook, Zalo, Twitter) do not. This Worker rewrites
- * the shell server-side so shared links show the correct title/description/image.
- *
- * Bundled by Wrangler (esbuild), NOT by Vite — kept outside src/ on purpose.
+ * For university detail pages it also injects per-page Open Graph / Twitter
+ * meta into the HTML. Why: pages still fetch their data client-side, so the
+ * server-rendered HTML only has the default meta. Social crawlers (Facebook,
+ * Zalo, Twitter) don't run JS, so this rewrite makes shared links show the
+ * correct title/description/image.
+ * TODO(phase 2): remove once the detail route sets its meta via head() + loader.
  */
+import handler from "@tanstack/react-start/server-entry";
 
 interface Env {
-	/** Static assets binding (the built dist/ folder). */
-	ASSETS: Fetcher;
 	/** Base URL of the API, e.g. https://api.timtruong.app. Set in wrangler.jsonc. */
 	API_BASE_URL: string;
 }
@@ -49,14 +49,9 @@ class CanonicalHandler {
 
 async function injectUniversityMeta(
 	slug: string,
-	request: Request,
+	page: Response,
 	env: Env,
 ): Promise<Response> {
-	// Always start from the SPA shell so the page still works if the API fails.
-	const shell = await env.ASSETS.fetch(
-		new Request(new URL("/", request.url), request),
-	);
-
 	let university: University | null = null;
 	try {
 		const res = await fetch(
@@ -64,10 +59,10 @@ async function injectUniversityMeta(
 		);
 		if (res.ok) university = (await res.json()) as University;
 	} catch {
-		// Network/API error → serve the shell with default meta.
+		// Network/API error → serve the page with default meta.
 	}
 
-	if (!university) return shell;
+	if (!university) return page;
 
 	const title = `${university.name} - ${SITE_NAME}`;
 	const description = `Thông tin tuyển sinh, học phí và danh sách ngành học của ${university.name}`;
@@ -85,19 +80,21 @@ async function injectUniversityMeta(
 		.on('meta[name="twitter:description"]', new MetaContentHandler(description))
 		.on('meta[name="twitter:image"]', new MetaContentHandler(image))
 		.on('link[rel="canonical"]', new CanonicalHandler(url))
-		.transform(shell);
+		.transform(page);
 }
 
 export default {
 	async fetch(request: Request, env: Env): Promise<Response> {
+		const page = await handler.fetch(request);
+
 		const url = new URL(request.url);
 		const match = url.pathname.match(/^\/danh-sach-truong\/([^/]+)\/?$/);
+		const isHtml = page.headers.get("content-type")?.includes("text/html");
 
-		if (match && request.method === "GET") {
-			return injectUniversityMeta(decodeURIComponent(match[1]), request, env);
+		if (match && request.method === "GET" && page.ok && isHtml) {
+			return injectUniversityMeta(decodeURIComponent(match[1]), page, env);
 		}
 
-		// Everything else: serve static assets (with SPA fallback per wrangler config).
-		return env.ASSETS.fetch(request);
+		return page;
 	},
 };

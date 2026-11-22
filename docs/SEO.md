@@ -4,7 +4,7 @@ Tài liệu này dành cho người chưa rành SEO: giải thích kiến thức
 triển khai trong codebase, việc cần làm trong tương lai, các hướng mở rộng, và **quy trình
 chuẩn khi thêm một page mới** để page đó được SEO tốt.
 
-> Bối cảnh kỹ thuật: `client/` là **SPA** (React 19 + Vite + TanStack Router), deploy lên
+> Bối cảnh kỹ thuật: `client/` là app **TanStack Start (SSR)** (React 19 + Vite + TanStack Router), deploy lên
 > **Cloudflare Workers**. Domain: `https://timtruong.app`. Brand hiển thị: **"TimTruong"**
 > (tách khỏi domain để sau này đổi `.net`/`.com` không phải sửa chữ brand).
 
@@ -20,12 +20,16 @@ tuần–vài tháng mới thấy kết quả), tích luỹ dần.
 Vòng đời: **Crawl** (bot tải trang) → **Index** (lưu vào chỉ mục) → **Rank** (xếp hạng khi có
 người tìm). Nếu trang không crawl/index được thì không thể xuất hiện trên kết quả tìm kiếm.
 
+> **Cập nhật:** client đã chuyển sang TanStack Start, server render HTML cho mọi trang (layout,
+> tiêu đề, meta mặc định). Tuy nhiên dữ liệu (trường, ngành, điểm chuẩn) vẫn được fetch ở trình
+> duyệt, nên mục 1.2 vẫn đúng với phần nội dung dữ liệu cho tới khi chuyển sang route loader.
+
 ### 1.2 Vì sao SPA khó SEO (điểm mấu chốt của dự án này)
 SPA trả về HTML gần như rỗng (`<div id="root">`), nội dung do JavaScript dựng sau:
 - **Googlebot** có chạy JS → vẫn đọc được nội dung + thẻ meta dựng bằng React. Với riêng
   Google, site cơ bản ổn.
 - **Crawler KHÔNG chạy JS** (Facebook, Zalo, Twitter/X, một phần Bing) chỉ đọc HTML tĩnh ban
-  đầu. Khi share link, chúng chỉ thấy thẻ meta **mặc định** trong `index.html`.
+  đầu. Khi share link, chúng chỉ thấy thẻ meta **mặc định** (nay nằm trong `head()` của `src/routes/__root.tsx`).
   → Đây là lý do cần **Worker inject meta** (mục 2.5) cho các trang động quan trọng.
 
 ### 1.3 Các yếu tố on-page quan trọng
@@ -77,7 +81,7 @@ CLS (độ ổn định layout), INP (độ phản hồi). Ảnh nên có `width
 
 | # | Hạng mục | Vị trí |
 |---|----------|--------|
-| 2.1 | Meta mặc định + `lang="vi"` + `noindex` tạm thời | `client/index.html` |
+| 2.1 | Meta mặc định + `lang="vi"` + `noindex` tạm thời | `client/src/routes/__root.tsx` |
 | 2.2 | Component `PageMetadata` (title/description/OG/canonical per-page) | `client/src/components/PageMetadata.tsx` |
 | 2.3 | Component `JsonLd` (structured data) | `client/src/components/JsonLd.tsx` |
 | 2.4 | `robots.txt` + sinh `sitemap.xml` lúc build | `client/public/robots.txt`, `client/scripts/generate-sitemap.ts` |
@@ -85,9 +89,10 @@ CLS (độ ổn định layout), INP (độ phản hồi). Ảnh nên có `width
 | 2.6 | URL slug thân thiện SEO (thay ID số) | `data/slugify.py`, `server/.../Utils/SlugGenerator.cs`, endpoint `by-slug` |
 | 2.7 | Brand "TimTruong" tách khỏi domain | toàn bộ điểm trên |
 
-### 2.1 `index.html` — nền meta tĩnh
-Mọi crawler (kể cả không-JS) đều thấy. Chứa: `lang="vi"`, title + description giàu từ khoá,
-OG/Twitter mặc định, canonical, `theme-color`, và **`<meta name="robots" content="noindex,
+### 2.1 `__root.tsx` — nền meta mặc định
+Được server render nên mọi crawler (kể cả không-JS) đều thấy. Gồm `<html lang="vi">` và `head()`:
+title + description giàu từ khoá, OG/Twitter mặc định, `theme-color`. Không có canonical/og:url
+mặc định (mỗi trang tự đặt qua `PageMetadata`, tránh 2 canonical mâu thuẫn), và **`<meta name="robots" content="noindex,
 follow">`** (đang chặn index vì site còn sơ khai).
 
 ### 2.2 `PageMetadata`
@@ -107,7 +112,7 @@ Render `<script type="application/ld+json">`. Đã gắn: `Organization` + `WebS
 
 ### 2.5 Worker inject meta (Phase social)
 `worker/index.ts` dùng `HTMLRewriter`: với request `/danh-sach-truong/{slug}`, fetch dữ liệu
-trường từ API rồi ghi đè `<title>` + `og:*`/`twitter:*` trong shell HTML → Facebook/Zalo hiển
+trường từ API rồi ghi đè `<title>` + `og:*`/`twitter:*` trong HTML do TanStack Start render → Facebook/Zalo hiển
 thị đúng tên trường + ảnh. Cần đặt `API_BASE_URL` trong `wrangler.jsonc`.
 
 ### 2.6 URL slug
@@ -127,7 +132,7 @@ cứu qua endpoint `GET /api/v1/universities/by-slug/{slug}`.
       `cd data && uv run etl_universities.py`. (Nếu `Slug` NULL, link trường không resolve.)
 
 ### 3.2 Checklist khi LAUNCH (bật index)
-- [ ] Gỡ `<meta name="robots" content="noindex, follow">` trong `index.html`.
+- [ ] Gỡ `{ name: "robots", content: "noindex, follow" }` trong `head()` của `client/src/routes/__root.tsx`.
 - [ ] Đổi `public/robots.txt` sang:
       ```
       User-agent: *
@@ -257,7 +262,7 @@ tự đọc qua JS) thì **không cần**.
 
 | Mục đích | File / Lệnh |
 |---|---|
-| Meta tĩnh mặc định | `client/index.html` |
+| Meta mặc định | `client/src/routes/__root.tsx` (`head()`) |
 | Meta per-page | `client/src/components/PageMetadata.tsx` |
 | Structured data | `client/src/components/JsonLd.tsx` |
 | robots.txt | `client/public/robots.txt` |

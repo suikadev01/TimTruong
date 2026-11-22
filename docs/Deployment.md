@@ -23,6 +23,6 @@ Features__EnableAutoMigrations=true
 cd client
 bun run deploy   # build + wrangler deploy
 ```
-Set `API_BASE_URL` in `wrangler.jsonc` to the production API URL — `worker/index.ts` uses it to inject per-university Open Graph meta for social crawlers. `wrangler.jsonc` serves `dist/` via the `ASSETS` binding with SPA fallback.
+Set `API_BASE_URL` in `wrangler.jsonc` to the production API URL — `worker/index.ts` uses it to inject per-university Open Graph meta for social crawlers. The client is a TanStack Start app: the Worker server-renders every page, and Cloudflare serves the built assets (`dist/client`) directly. `vite build` generates the real deploy config in `dist/server/wrangler.json`, and `wrangler deploy` finds it through `.wrangler/deploy/config.json`, so don't pass `--config`. Run `npx wrangler deploy --dry-run` after a build to check what will be uploaded.
 
 ---
