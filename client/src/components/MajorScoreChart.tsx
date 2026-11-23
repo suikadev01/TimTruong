@@ -1,7 +1,7 @@
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { GridRows } from "@visx/grid";
 import { Group } from "@visx/group";
-import { ParentSize } from "@visx/responsive";
+import { useParentSize } from "@visx/responsive";
 import { scaleLinear } from "@visx/scale";
 import { LinePath } from "@visx/shape";
 import { defaultStyles, TooltipWithBounds, useTooltip } from "@visx/tooltip";
@@ -36,7 +36,11 @@ interface TooltipDatum {
 	labels: string[]; // every series whose dot sits on this exact point
 }
 
-const Facet = ({ block, width }: { block: ExamSeries; width: number }) => {
+const Facet = ({ block }: { block: ExamSeries }) => {
+	// visx 4's <ParentSize> wraps children in an absolute, overflow-hidden box sized to
+	// the parent — with an auto-height parent that box is 0px tall and clips the chart.
+	// Measure width on a normal-flow div instead.
+	const { parentRef, width } = useParentSize();
 	const innerW = Math.max(0, width - MARGIN.left - MARGIN.right);
 	const innerH = HEIGHT - MARGIN.top - MARGIN.bottom;
 
@@ -88,94 +92,96 @@ const Facet = ({ block, width }: { block: ExamSeries; width: number }) => {
 	}
 
 	return (
-		<div className="relative" style={{ width }}>
-			<svg width={width} height={HEIGHT} className="text-muted-foreground">
-				<Group left={MARGIN.left} top={MARGIN.top}>
-					<GridRows
-						scale={yScale}
-						width={innerW}
-						numTicks={4}
-						stroke="currentColor"
-						strokeOpacity={0.12}
-					/>
-					<AxisLeft
-						scale={yScale}
-						numTicks={4}
-						tickFormat={(v) => formatScore(v as number)}
-						stroke="currentColor"
-						tickStroke="currentColor"
-						tickLength={4}
-						tickLabelProps={() => ({
-							fill: "currentColor",
-							fontSize: 10,
-							textAnchor: "end",
-							dx: -2,
-							dy: 3,
-						})}
-					/>
-					<AxisBottom
-						top={innerH}
-						scale={xScale}
-						tickValues={years}
-						tickFormat={(v) => String(v)}
-						stroke="currentColor"
-						tickStroke="currentColor"
-						tickLength={4}
-						tickLabelProps={() => ({
-							fill: "currentColor",
-							fontSize: 10,
-							textAnchor: "middle",
-							dy: 2,
-						})}
-					/>
-					{block.series.map((s, i) => {
-						const color = PALETTE[i % PALETTE.length];
-						return (
-							<Group key={seriesLabel(s)}>
-								<LinePath
-									data={s.points}
-									defined={(p) => p.score != null}
-									x={(p) => xScale(p.year)}
-									y={(p) => yScale(p.score ?? 0)}
-									stroke={color}
-									strokeWidth={2}
-									strokeLinecap="round"
-								/>
-								{s.points.map((p) =>
-									p.score != null ? (
-										<circle
-											key={p.year}
-											cx={xScale(p.year)}
-											cy={yScale(p.score)}
-											r={3}
-											fill={color}
-										/>
-									) : null,
-								)}
-							</Group>
-						);
-					})}
-					{/* One hover target per coincident point — reports every combo there. */}
-					{[...pointGroups.values()].map((g) => (
-						<circle
-							key={`${g.year}|${g.score}`}
-							cx={xScale(g.year)}
-							cy={yScale(g.score)}
-							r={10}
-							fill="transparent"
-							className="cursor-pointer"
-							onMouseMove={() =>
-								showTooltip({
-									tooltipData: g,
-									tooltipLeft: MARGIN.left + xScale(g.year),
-									tooltipTop: MARGIN.top + yScale(g.score),
-								})
-							}
-							onMouseLeave={hideTooltip}
+		<div ref={parentRef} className="relative" style={{ height: HEIGHT }}>
+			{width > 0 && (
+				<svg width={width} height={HEIGHT} className="text-muted-foreground">
+					<Group left={MARGIN.left} top={MARGIN.top}>
+						<GridRows
+							scale={yScale}
+							width={innerW}
+							numTicks={4}
+							stroke="currentColor"
+							strokeOpacity={0.12}
 						/>
-					))}
-				</Group>
-			</svg>
+						<AxisLeft
+							scale={yScale}
+							numTicks={4}
+							tickFormat={(v) => formatScore(v as number)}
+							stroke="currentColor"
+							tickStroke="currentColor"
+							tickLength={4}
+							tickLabelProps={() => ({
+								fill: "currentColor",
+								fontSize: 10,
+								textAnchor: "end",
+								dx: -2,
+								dy: 3,
+							})}
+						/>
+						<AxisBottom
+							top={innerH}
+							scale={xScale}
+							tickValues={years}
+							tickFormat={(v) => String(v)}
+							stroke="currentColor"
+							tickStroke="currentColor"
+							tickLength={4}
+							tickLabelProps={() => ({
+								fill: "currentColor",
+								fontSize: 10,
+								textAnchor: "middle",
+								dy: 2,
+							})}
+						/>
+						{block.series.map((s, i) => {
+							const color = PALETTE[i % PALETTE.length];
+							return (
+								<Group key={seriesLabel(s)}>
+									<LinePath
+										data={s.points}
+										defined={(p) => p.score != null}
+										x={(p) => xScale(p.year)}
+										y={(p) => yScale(p.score ?? 0)}
+										stroke={color}
+										strokeWidth={2}
+										strokeLinecap="round"
+									/>
+									{s.points.map((p) =>
+										p.score != null ? (
+											<circle
+												key={p.year}
+												cx={xScale(p.year)}
+												cy={yScale(p.score)}
+												r={3}
+												fill={color}
+											/>
+										) : null,
+									)}
+								</Group>
+							);
+						})}
+						{/* One hover target per coincident point — reports every combo there. */}
+						{[...pointGroups.values()].map((g) => (
+							<circle
+								key={`${g.year}|${g.score}`}
+								cx={xScale(g.year)}
+								cy={yScale(g.score)}
+								r={10}
+								fill="transparent"
+								className="cursor-pointer"
+								onMouseMove={() =>
+									showTooltip({
+										tooltipData: g,
+										tooltipLeft: MARGIN.left + xScale(g.year),
+										tooltipTop: MARGIN.top + yScale(g.score),
+									})
+								}
+								onMouseLeave={hideTooltip}
+							/>
+						))}
+					</Group>
+				</svg>
+			)}
 			{tooltipOpen && tooltipData && (
 				<TooltipWithBounds
 					top={tooltipTop}
@@ -237,11 +243,7 @@ const MajorScoreChart = ({ requirements }: MajorScoreChartProps) => {
 								</span>
 							))}
 						</div>
-						<ParentSize>
-							{({ width }) =>
-								width > 0 ? <Facet block={block} width={width} /> : null
-							}
-						</ParentSize>
+						<Facet block={block} />
 					</div>
 				</div>
 			))}

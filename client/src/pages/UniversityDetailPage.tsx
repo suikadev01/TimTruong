@@ -20,6 +20,7 @@ import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import JsonLd from "@/components/JsonLd";
 import PageMetadata from "@/components/PageMetadata";
 import { latestPerSystem, rankSentence } from "@/components/RankingBadges";
+import MajorTuitionTable from "@/components/MajorTuitionTable";
 import { RequirementsTable } from "@/components/RequirementsTable";
 import { UniversityBadges } from "@/components/UniversityBadges";
 import { UniversityLogo } from "@/components/UniversityLogo";
@@ -42,9 +43,7 @@ import {
 
 // Charts pull in visx; lazy so they only load when a row expands.
 const MajorScoreChart = lazy(() => import("@/components/MajorScoreChart"));
-const MajorTuitionHistory = lazy(
-	() => import("@/components/MajorTuitionHistory"),
-);
+const MajorTuitionChart = lazy(() => import("@/components/MajorTuitionChart"));
 
 import {
 	formatAcademicYear,
@@ -553,9 +552,10 @@ const MajorTableRow = ({
 							</p>
 						)}
 						<RequirementsTable requirements={m.admissionRequirements} />
+						<MajorTuitionTable years={m.years} />
 						<Suspense fallback={null}>
 							<MajorScoreChart requirements={m.admissionRequirements} />
-							<MajorTuitionHistory years={m.years} />
+							<MajorTuitionChart years={m.years} />
 						</Suspense>
 					</TableCell>
 				</TableRow>
