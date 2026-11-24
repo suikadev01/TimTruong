@@ -88,6 +88,7 @@ CLS (độ ổn định layout), INP (độ phản hồi). Ảnh nên có `width
 | 2.5 | Worker inject OG cho trang chi tiết (crawler không-JS) | `client/worker/index.ts`, `client/wrangler.jsonc` |
 | 2.6 | URL slug thân thiện SEO (thay ID số) | `data/slugify.py`, `server/.../Utils/SlugGenerator.cs`, endpoint `by-slug` |
 | 2.7 | Brand "TimTruong" tách khỏi domain | toàn bộ điểm trên |
+| 2.8 | Cẩm nang (blog MDX): meta qua route `head()` + `seoHead()`, JSON-LD `Article`, sitemap, RSS | `client/src/lib/blog.ts`, `client/src/lib/seo.ts`, xem `docs/Blog.md` |
 
 ### 2.1 `__root.tsx` — nền meta mặc định
 Được server render nên mọi crawler (kể cả không-JS) đều thấy. Gồm `<html lang="vi">` và `head()`:
@@ -278,6 +279,7 @@ tự đọc qua JS) thì **không cần**.
 | Sinh sitemap | `client/scripts/generate-sitemap.ts` (chạy trong `bun run build`) |
 | Worker inject OG | `client/worker/index.ts`, `client/wrangler.jsonc` |
 | Sinh ảnh share (OG) | `client/scripts/generate-og-images.ts` (chạy trong `bun run build`) |
+| Viết bài Cẩm nang | `client/src/content/cam-nang/*.mdx`, hướng dẫn: `docs/Blog.md` |
 | Slug (data) | `data/slugify.py` |
 | Slug (server) | `server/TimTruong.ApiService/Utils/SlugGenerator.cs` |
 | Build client | `cd client && bun run build` |

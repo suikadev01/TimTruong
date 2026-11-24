@@ -1,0 +1,93 @@
+---
+title: Kỳ thi V-SAT là gì? Danh sách trường xét tuyển bằng V-SAT
+description: V-SAT là kỳ thi đánh giá đầu vào đại học trên máy tính. Tìm hiểu cấu trúc câu hỏi, cách tính điểm và danh sách các trường dùng kết quả V-SAT để xét tuyển.
+date: 2026-11-25
+draft: false
+---
+
+import { SchoolListTable } from "@/components/blog/SchoolListTable";
+
+## V-SAT là gì?
+
+**V-SAT** (Vietnam Standardized Admission Test) là kỳ thi đánh giá đầu vào đại học **làm bài
+trên máy tính**, tổ chức lần đầu năm 2023. Kết quả V-SAT là một phương thức xét tuyển riêng,
+bên cạnh điểm thi tốt nghiệp THPT và học bạ.
+
+Bạn thi theo **từng môn độc lập** và chỉ cần thi những môn có trong tổ hợp xét tuyển của ngành
+mình muốn học. {/* TODO: kiểm tra — "thi từng môn, chọn 1–8 môn" mới đọc được qua bản tóm tắt trang chủ v-sat.edu.vn, chưa có nguyên văn */}
+Các môn thường được chấm theo **thang 150 điểm**. {/* TODO: kiểm tra — thang điểm 150 (Ngữ văn 120) chưa đối chiếu được với nguồn chính thức */}
+
+Năm 2025, Bộ GD&ĐT dùng hai mã phương thức cho V-SAT:
+
+- **416**: xét tuyển bằng kết quả V-SAT do chính trường tổ chức.
+- **417**: xét tuyển bằng kết quả V-SAT do đơn vị khác tổ chức.
+
+### Các dạng câu hỏi và cách tính điểm
+
+| Dạng câu hỏi | Cách làm | Điểm |
+| --- | --- | --- |
+| Trắc nghiệm 4 lựa chọn | Chọn 1 đáp án đúng nhất | Đúng: 6 điểm |
+| Đúng/Sai | Mỗi câu có 4 ý, xét đúng hay sai từng ý | Đúng 1 ý: 1 điểm · 2 ý: 2 điểm · 3 ý: 3 điểm · cả 4 ý: 6 điểm |
+| Ghép hợp | Ghép các cặp thông tin | Mỗi ý đúng: 1,5 điểm · đúng cả 4 ý: 6 điểm |
+| Trả lời ngắn | Tự điền từ, cụm từ hoặc câu ngắn | Đúng: 6 điểm |
+
+Với câu Đúng/Sai, phải đúng **cả 4 ý** mới được trọn 6 điểm. Đúng 3 ý chỉ được một nửa số
+điểm, nên đừng chủ quan với dạng câu này.
+
+## Danh sách các trường dùng kết quả V-SAT
+
+Trong mùa tuyển sinh 2025 có **25 trường** dùng kết quả V-SAT để xét tuyển, trong đó **11
+trường** tự tổ chức thi. Bấm vào tiêu đề cột để sắp xếp.
+
+export const schools2025 = [
+	{ name: "Đại học Thái Nguyên – Trường Đại học Sư phạm", region: "Miền Bắc", note: "Thuộc ĐH Thái Nguyên (tổ chức thi)" },
+	{ name: "Đại học Thái Nguyên – Trường Đại học Kỹ thuật Công nghiệp", region: "Miền Bắc", note: "Thuộc ĐH Thái Nguyên (tổ chức thi)" },
+	{ name: "Đại học Thái Nguyên – Trường Đại học Khoa học", region: "Miền Bắc", note: "Thuộc ĐH Thái Nguyên (tổ chức thi)" },
+	{ name: "Đại học Thái Nguyên – Trường Đại học Ngoại ngữ", region: "Miền Bắc", note: "Thuộc ĐH Thái Nguyên (tổ chức thi)" },
+	{ name: "Đại học Thái Nguyên – Trường Đại học Kinh tế và Quản trị Kinh doanh", region: "Miền Bắc", note: "Thuộc ĐH Thái Nguyên (tổ chức thi)" },
+	{ name: "Đại học Thái Nguyên – Khoa Quốc tế", region: "Miền Bắc", note: "Thuộc ĐH Thái Nguyên (tổ chức thi)" },
+	{ name: "Trường Đại học Xây dựng Hà Nội", region: "Miền Bắc" },
+	{ name: "Trường Đại học Phenikaa", region: "Miền Bắc" },
+	{ name: "Học viện Ngân hàng", region: "Miền Bắc", note: "Tổ chức thi" },
+	{ name: "Trường Đại học Sư phạm Kỹ thuật Hưng Yên", region: "Miền Bắc", note: "Tổ chức thi" },
+	{ name: "Trường Đại học Duy Tân", region: "Miền Trung" },
+	{ name: "Trường Đại học Sài Gòn", slug: "truong-dai-hoc-sai-gon-sgu", region: "TP.HCM", note: "Tổ chức thi" },
+	{ name: "Trường Đại học Ngân hàng TP.HCM", slug: "truong-dai-hoc-ngan-hang-tp-hcm-hub", region: "TP.HCM", note: "Tổ chức thi" },
+	{ name: "Trường Đại học Tài chính – Marketing", slug: "truong-dai-hoc-tai-chinh-marketing-ufm", region: "TP.HCM", note: "Tổ chức thi" },
+	{ name: "Trường Đại học Mở TP.HCM", slug: "truong-dai-hoc-mo-tp-hcm-ou", region: "TP.HCM", note: "Tổ chức thi" },
+	{ name: "Trường Đại học Văn Lang", slug: "truong-dai-hoc-van-lang-vlu", region: "TP.HCM", note: "Tổ chức thi" },
+	{ name: "Trường Đại học Kinh tế - Tài chính TP.HCM (UEF)", slug: "truong-dai-hoc-kinh-te-tai-chinh-thanh-pho-ho-chi-minh-uef", region: "TP.HCM" },
+	{ name: "Trường Đại học Luật TP.HCM", slug: "truong-dai-hoc-luat-tp-hcm-ulaw", region: "TP.HCM" },
+	{ name: "Trường Đại học Công nghệ TP.HCM (HUTECH)", slug: "truong-dai-hoc-cong-nghe-thanh-pho-ho-chi-minh-hutech", region: "TP.HCM" },
+	{ name: "Trường Đại học Quốc tế Hồng Bàng", slug: "truong-dai-hoc-quoc-te-hong-bang-hiu", region: "TP.HCM" },
+	{ name: "Đại học Kinh tế TP.HCM (UEH)", slug: "dai-hoc-kinh-te-tp-ho-chi-minh-ueh", region: "TP.HCM" },
+	{ name: "Trường Đại học Lạc Hồng", region: "Đông Nam Bộ" },
+	{ name: "Trường Đại học Cần Thơ", region: "ĐBSCL", note: "Tổ chức thi" },
+	{ name: "Trường Đại học Đồng Tháp", region: "ĐBSCL", note: "Tổ chức thi" },
+	{ name: "Trường Đại học Trà Vinh", region: "ĐBSCL", note: "Tổ chức thi" },
+];
+
+<SchoolListTable schools={schools2025} />
+
+### Mùa tuyển sinh 2026
+
+Từ tháng 10/2025, các trường bắt đầu công bố phương án tuyển sinh 2026, và danh sách vẫn đang
+được cập nhật. Ở TP.HCM, [Trường Đại học Tài chính – Marketing](/danh-sach-truong/truong-dai-hoc-tai-chinh-marketing-ufm),
+[Trường Đại học Ngân hàng TP.HCM](/danh-sach-truong/truong-dai-hoc-ngan-hang-tp-hcm-hub),
+[HUTECH](/danh-sach-truong/truong-dai-hoc-cong-nghe-thanh-pho-ho-chi-minh-hutech) và
+[Trường Đại học Hoa Sen](/danh-sach-truong/truong-dai-hoc-hoa-sen-hsu) đã công bố có xét
+kết quả V-SAT.
+
+Đại học Cần Thơ tổ chức V-SAT năm 2026 **7 đợt, từ 30/01 đến 05/07/2026**. Kết quả được 10
+trường ở Đồng bằng sông Cửu Long sử dụng.
+
+Phương án tuyển sinh có thể thay đổi, nên trước khi đăng ký thi, hãy kiểm tra lại đề án tuyển
+sinh trên trang chính thức của trường bạn nhắm tới. Bạn cũng có thể
+[tra cứu các trường ở TP.HCM](/danh-sach-truong) để xem ngành, điểm chuẩn và học phí.
+
+## Nguồn tham khảo
+
+- [Trang thông tin kỳ thi V-SAT](https://www.v-sat.edu.vn)
+- [Cấu trúc đề thi và định dạng câu hỏi V-SAT](https://www.v-sat.edu.vn/ky-thi-v-sat/cau-truc-de-vsat-dinh-dang-cau-hoi-vsat)
+- [Các trường sử dụng điểm V-SAT (2025)](https://www.v-sat.edu.vn/VSAT-news/cac-truong-su-dung-diem-vsat)
+- [Các trường công bố sử dụng kết quả V-SAT 2026](https://www.v-sat.edu.vn/VSAT-news/cac-truong-su-dung-vsat-2026)

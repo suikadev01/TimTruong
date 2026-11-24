@@ -12,6 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TimKiemRouteImport } from './routes/tim-kiem'
 import { Route as ToHopMonRouteImport } from './routes/to-hop-mon'
+import { Route as CamNangIndexRouteImport } from './routes/cam-nang.index'
+import { Route as CamNangSlugRouteImport } from './routes/cam-nang.$slug'
+import { Route as CamNangRssDotxmlRouteImport } from './routes/cam-nang.rss[.]xml'
 import { Route as DanhSachTruongIndexRouteImport } from './routes/danh-sach-truong.index'
 import { Route as DanhSachTruongSlugRouteImport } from './routes/danh-sach-truong.$slug'
 
@@ -30,6 +33,21 @@ const ToHopMonRoute = ToHopMonRouteImport.update({
   path: '/to-hop-mon',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CamNangIndexRoute = CamNangIndexRouteImport.update({
+  id: '/cam-nang/',
+  path: '/cam-nang/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CamNangSlugRoute = CamNangSlugRouteImport.update({
+  id: '/cam-nang/$slug',
+  path: '/cam-nang/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CamNangRssDotxmlRoute = CamNangRssDotxmlRouteImport.update({
+  id: '/cam-nang/rss.xml',
+  path: '/cam-nang/rss.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DanhSachTruongIndexRoute = DanhSachTruongIndexRouteImport.update({
   id: '/danh-sach-truong/',
   path: '/danh-sach-truong/',
@@ -45,14 +63,20 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/tim-kiem': typeof TimKiemRoute
   '/to-hop-mon': typeof ToHopMonRoute
+  '/cam-nang/$slug': typeof CamNangSlugRoute
+  '/cam-nang/rss.xml': typeof CamNangRssDotxmlRoute
   '/danh-sach-truong/$slug': typeof DanhSachTruongSlugRoute
+  '/cam-nang/': typeof CamNangIndexRoute
   '/danh-sach-truong/': typeof DanhSachTruongIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/tim-kiem': typeof TimKiemRoute
   '/to-hop-mon': typeof ToHopMonRoute
+  '/cam-nang/$slug': typeof CamNangSlugRoute
+  '/cam-nang/rss.xml': typeof CamNangRssDotxmlRoute
   '/danh-sach-truong/$slug': typeof DanhSachTruongSlugRoute
+  '/cam-nang': typeof CamNangIndexRoute
   '/danh-sach-truong': typeof DanhSachTruongIndexRoute
 }
 export interface FileRoutesById {
@@ -60,7 +84,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/tim-kiem': typeof TimKiemRoute
   '/to-hop-mon': typeof ToHopMonRoute
+  '/cam-nang/$slug': typeof CamNangSlugRoute
+  '/cam-nang/rss.xml': typeof CamNangRssDotxmlRoute
   '/danh-sach-truong/$slug': typeof DanhSachTruongSlugRoute
+  '/cam-nang/': typeof CamNangIndexRoute
   '/danh-sach-truong/': typeof DanhSachTruongIndexRoute
 }
 export interface FileRouteTypes {
@@ -69,21 +96,30 @@ export interface FileRouteTypes {
     | '/'
     | '/tim-kiem'
     | '/to-hop-mon'
+    | '/cam-nang/$slug'
+    | '/cam-nang/rss.xml'
     | '/danh-sach-truong/$slug'
+    | '/cam-nang/'
     | '/danh-sach-truong/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/tim-kiem'
     | '/to-hop-mon'
+    | '/cam-nang/$slug'
+    | '/cam-nang/rss.xml'
     | '/danh-sach-truong/$slug'
+    | '/cam-nang'
     | '/danh-sach-truong'
   id:
     | '__root__'
     | '/'
     | '/tim-kiem'
     | '/to-hop-mon'
+    | '/cam-nang/$slug'
+    | '/cam-nang/rss.xml'
     | '/danh-sach-truong/$slug'
+    | '/cam-nang/'
     | '/danh-sach-truong/'
   fileRoutesById: FileRoutesById
 }
@@ -91,7 +127,10 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   TimKiemRoute: typeof TimKiemRoute
   ToHopMonRoute: typeof ToHopMonRoute
+  CamNangSlugRoute: typeof CamNangSlugRoute
+  CamNangRssDotxmlRoute: typeof CamNangRssDotxmlRoute
   DanhSachTruongSlugRoute: typeof DanhSachTruongSlugRoute
+  CamNangIndexRoute: typeof CamNangIndexRoute
   DanhSachTruongIndexRoute: typeof DanhSachTruongIndexRoute
 }
 
@@ -118,6 +157,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToHopMonRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cam-nang/': {
+      id: '/cam-nang/'
+      path: '/cam-nang'
+      fullPath: '/cam-nang/'
+      preLoaderRoute: typeof CamNangIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cam-nang/$slug': {
+      id: '/cam-nang/$slug'
+      path: '/cam-nang/$slug'
+      fullPath: '/cam-nang/$slug'
+      preLoaderRoute: typeof CamNangSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cam-nang/rss.xml': {
+      id: '/cam-nang/rss.xml'
+      path: '/cam-nang/rss.xml'
+      fullPath: '/cam-nang/rss.xml'
+      preLoaderRoute: typeof CamNangRssDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/danh-sach-truong/': {
       id: '/danh-sach-truong/'
       path: '/danh-sach-truong'
@@ -139,7 +199,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   TimKiemRoute: TimKiemRoute,
   ToHopMonRoute: ToHopMonRoute,
+  CamNangSlugRoute: CamNangSlugRoute,
+  CamNangRssDotxmlRoute: CamNangRssDotxmlRoute,
   DanhSachTruongSlugRoute: DanhSachTruongSlugRoute,
+  CamNangIndexRoute: CamNangIndexRoute,
   DanhSachTruongIndexRoute: DanhSachTruongIndexRoute,
 }
 export const routeTree = rootRouteImport

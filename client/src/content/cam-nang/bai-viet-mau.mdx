@@ -1,0 +1,50 @@
+---
+title: Bài viết mẫu – cách viết một bài Cẩm nang
+description: Bài nháp mẫu minh hoạ mọi định dạng có thể dùng trong Cẩm nang. Chỉ hiện khi chạy bun run dev, không bao giờ lên production.
+date: 2026-11-24
+draft: true
+---
+
+import { Badge } from "@/components/ui/badge";
+
+Đây là bài **nháp mẫu** (`draft: true`): chỉ hiện khi chạy `bun run dev`. Hãy copy file này
+để bắt đầu một bài mới. Tiêu đề bài (thẻ `<h1>`) lấy từ `title` ở frontmatter, nên trong bài
+chỉ dùng từ `##` trở xuống.
+
+## Định dạng chữ
+
+Chữ **đậm**, chữ *nghiêng*, ~~gạch ngang~~ và `mã code`. Link tới trang trong app:
+[danh sách trường](/danh-sach-truong) hoặc [tổ hợp môn](/to-hop-mon). Link ra ngoài:
+[Bộ GD&ĐT](https://moet.gov.vn).
+
+### Danh sách
+
+- Điểm chuẩn là mức điểm thấp nhất để trúng tuyển vào một ngành.
+- Mỗi ngành có thể xét nhiều tổ hợp môn khác nhau.
+  - Danh sách lồng nhau cũng được.
+
+1. Bước một
+2. Bước hai
+
+## Bảng
+
+| Tổ hợp | Môn thi                 |
+| ------ | ----------------------- |
+| A00    | Toán, Vật lí, Hóa học   |
+| A01    | Toán, Vật lí, Tiếng Anh |
+| D01    | Toán, Ngữ văn, Tiếng Anh |
+
+## Trích dẫn
+
+> Mẹo: viết `description` khoảng 150–160 ký tự, chứa từ khoá chính, vì đó là đoạn mô tả hiện
+> trên Google.
+
+## Dùng component React
+
+Có thể import và dùng component của app ngay trong bài:
+<Badge>Trường công lập</Badge> <Badge variant="outline">Có ký túc xá</Badge>
+
+## Ảnh
+
+Đặt ảnh trong `client/public/cam-nang/<slug>/` rồi chèn bằng đường dẫn tuyệt đối, ví dụ
+`![Mô tả ảnh](/cam-nang/bai-viet-mau/anh.png)`.

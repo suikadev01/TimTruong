@@ -42,6 +42,12 @@ const Header = () => {
 					>
 						Tổ hợp môn
 					</Link>
+					<Link
+						to="/cam-nang"
+						className="text-muted-foreground hover:text-primary hover:bg-accent px-3 py-2 rounded-md transition-colors duration-200"
+					>
+						Cẩm nang
+					</Link>
 				</nav>
 
 				{/* Right side actions */}
@@ -109,6 +115,13 @@ const Header = () => {
 							onClick={() => setMobileMenuOpen(false)}
 						>
 							Tổ hợp môn
+						</Link>
+						<Link
+							to="/cam-nang"
+							className="text-muted-foreground hover:text-primary hover:bg-accent px-3 py-3 rounded-md transition-colors duration-200"
+							onClick={() => setMobileMenuOpen(false)}
+						>
+							Cẩm nang
 						</Link>
 					</nav>
 				</div>
