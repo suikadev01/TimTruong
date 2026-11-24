@@ -16,3 +16,4 @@ etl/data/schools/*/majors/*/images/
 
 .claude/settings.local.json
 CLAUDE.md
+client/src/content/outlines/
