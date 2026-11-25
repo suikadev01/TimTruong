@@ -6,6 +6,9 @@ erDiagram
     Universities ||--o{ UniversityRankings : "ranked in"
     Majors ||--o{ AdmissionRequirements : "has"
     Majors ||--o{ MajorYears : "offered in"
+    Universities ||--o{ UniversityImages : "photos"
+    Campuses |o--o{ UniversityImages : "shown in"
+    Dormitories ||--o{ DormitoryImages : "photos"
 
     Universities {
         int Id PK
@@ -80,5 +83,24 @@ erDiagram
         int RankFrom "thứ hạng / cận dưới của khoảng — cho phép trùng"
         int RankTo "==From nếu hạng đơn; cận trên nếu band đóng; null nếu band mở (1001+)"
         string SourceUrl "Nullable — link nguồn, có thể dùng chung"
+    }
+
+    UniversityImages {
+        int Id PK
+        int UniversityId FK
+        int CampusId FK "Nullable — null = ảnh chung của trường; SET NULL khi xoá campus"
+        string Key "R2 object key, unique per university"
+        string Caption "Nullable"
+        string SourceUrl "link ảnh gốc (ghi nguồn)"
+        int SortOrder "thứ tự dòng trong CSV"
+    }
+
+    DormitoryImages {
+        int Id PK
+        int DormitoryId FK
+        string Key "R2 object key, unique per dormitory"
+        string Caption "Nullable"
+        string SourceUrl "link ảnh gốc (ghi nguồn)"
+        int SortOrder "thứ tự dòng trong CSV"
     }
 ```    

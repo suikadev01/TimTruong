@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Core.Models;
 using TimTruong.ApiService.DataAccess;
 using TimTruong.ApiService.DTOs;
+using TimTruong.ApiService.Options;
 
 namespace TimTruong.ApiService.Services;
 
@@ -12,11 +14,14 @@ public class UniversityService : IUniversityService
 {
     private readonly ApplicationDbContext _context;
     private readonly ILogger<UniversityService> _logger;
+    // "https://img.timtruong.app/" — image URL = this + object key
+    private readonly string _imageUrlPrefix;
 
-    public UniversityService(ApplicationDbContext context, ILogger<UniversityService> logger)
+    public UniversityService(ApplicationDbContext context, ILogger<UniversityService> logger, IOptions<StorageOptions> storage)
     {
         _context = context;
         _logger = logger;
+        _imageUrlPrefix = storage.Value.PublicBaseUrl.TrimEnd('/') + "/";
     }
 
     public async Task<List<UniversityDto>> GetAllUniversitiesAsync(string? search = null, string? type = null, string? city = null, bool? hasDormitory = null, string? sort = null)
@@ -149,12 +154,24 @@ public class UniversityService : IUniversityService
                 Campuses = u.Campuses.Select(c => new CampusLocationDto(c.City, c.District)).ToList(),
                 Dormitories = u.Dormitories
                     .OrderBy(d => d.Name)
-                    .Select(d => new DormitoryDto(d.Name, d.Address, d.Note, d.RegistrationUrl))
+                    .Select(d => new DormitoryDto(d.Name, d.Address, d.Note, d.RegistrationUrl,
+                        d.Images
+                            .OrderBy(i => i.SortOrder)
+                            .Select(i => new ImageDto(_imageUrlPrefix + i.Key, i.Caption, i.SourceUrl))
+                            .ToList()))
                     .ToList(),
                 Rankings = u.Rankings
                     .OrderByDescending(r => r.Year)
                     .ThenBy(r => r.RankingSystem)
                     .Select(r => new RankingDto(r.RankingSystem.ToString(), r.Year, r.RankFrom, r.RankTo, r.SourceUrl))
+                    .ToList(),
+                Images = u.Images
+                    .OrderBy(i => i.SortOrder)
+                    .Select(i => new UniversityImageDto(
+                        _imageUrlPrefix + i.Key,
+                        i.Caption,
+                        i.SourceUrl,
+                        i.Campus != null ? i.Campus.Name : null))
                     .ToList()
             })
             .FirstOrDefaultAsync();
@@ -192,12 +209,24 @@ public class UniversityService : IUniversityService
                 Campuses = u.Campuses.Select(c => new CampusLocationDto(c.City, c.District)).ToList(),
                 Dormitories = u.Dormitories
                     .OrderBy(d => d.Name)
-                    .Select(d => new DormitoryDto(d.Name, d.Address, d.Note, d.RegistrationUrl))
+                    .Select(d => new DormitoryDto(d.Name, d.Address, d.Note, d.RegistrationUrl,
+                        d.Images
+                            .OrderBy(i => i.SortOrder)
+                            .Select(i => new ImageDto(_imageUrlPrefix + i.Key, i.Caption, i.SourceUrl))
+                            .ToList()))
                     .ToList(),
                 Rankings = u.Rankings
                     .OrderByDescending(r => r.Year)
                     .ThenBy(r => r.RankingSystem)
                     .Select(r => new RankingDto(r.RankingSystem.ToString(), r.Year, r.RankFrom, r.RankTo, r.SourceUrl))
+                    .ToList(),
+                Images = u.Images
+                    .OrderBy(i => i.SortOrder)
+                    .Select(i => new UniversityImageDto(
+                        _imageUrlPrefix + i.Key,
+                        i.Caption,
+                        i.SourceUrl,
+                        i.Campus != null ? i.Campus.Name : null))
                     .ToList()
             })
             .FirstOrDefaultAsync();

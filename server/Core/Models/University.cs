@@ -58,4 +58,5 @@ public class University
     public ICollection<Major> Majors { get; set; } = new List<Major>();
     public ICollection<Dormitory> Dormitories { get; set; } = new List<Dormitory>();
     public ICollection<UniversityRanking> Rankings { get; set; } = new List<UniversityRanking>();
+    public ICollection<UniversityImage> Images { get; set; } = new List<UniversityImage>();
 }

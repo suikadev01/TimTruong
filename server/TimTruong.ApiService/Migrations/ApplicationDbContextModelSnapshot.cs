@@ -16,7 +16,7 @@ namespace TimTruong.ApiService.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.8")
+                .HasAnnotation("ProductVersion", "10.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -134,6 +134,42 @@ namespace TimTruong.ApiService.Migrations
                         .IsUnique();
 
                     b.ToTable("Dormitories");
+                });
+
+            modelBuilder.Entity("Core.Models.DormitoryImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Caption")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<int>("DormitoryId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SourceUrl")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DormitoryId", "Key")
+                        .IsUnique();
+
+                    b.ToTable("DormitoryImages");
                 });
 
             modelBuilder.Entity("Core.Models.Major", b =>
@@ -263,6 +299,47 @@ namespace TimTruong.ApiService.Migrations
                     b.ToTable("Universities");
                 });
 
+            modelBuilder.Entity("Core.Models.UniversityImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CampusId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Caption")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SourceUrl")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<int>("UniversityId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CampusId");
+
+                    b.HasIndex("UniversityId", "Key")
+                        .IsUnique();
+
+                    b.ToTable("UniversityImages");
+                });
+
             modelBuilder.Entity("Core.Models.UniversityRanking", b =>
                 {
                     b.Property<int>("Id")
@@ -335,6 +412,17 @@ namespace TimTruong.ApiService.Migrations
                     b.Navigation("University");
                 });
 
+            modelBuilder.Entity("Core.Models.DormitoryImage", b =>
+                {
+                    b.HasOne("Core.Models.Dormitory", "Dormitory")
+                        .WithMany("Images")
+                        .HasForeignKey("DormitoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Dormitory");
+                });
+
             modelBuilder.Entity("Core.Models.Major", b =>
                 {
                     b.HasOne("Core.Models.University", "University")
@@ -355,6 +443,24 @@ namespace TimTruong.ApiService.Migrations
                         .IsRequired();
 
                     b.Navigation("Major");
+                });
+
+            modelBuilder.Entity("Core.Models.UniversityImage", b =>
+                {
+                    b.HasOne("Core.Models.Campus", "Campus")
+                        .WithMany()
+                        .HasForeignKey("CampusId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Core.Models.University", "University")
+                        .WithMany("Images")
+                        .HasForeignKey("UniversityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Campus");
+
+                    b.Navigation("University");
                 });
 
             modelBuilder.Entity("Core.Models.UniversityRanking", b =>
@@ -383,6 +489,11 @@ namespace TimTruong.ApiService.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Core.Models.Dormitory", b =>
+                {
+                    b.Navigation("Images");
+                });
+
             modelBuilder.Entity("Core.Models.Major", b =>
                 {
                     b.Navigation("AdmissionRequirements");
@@ -393,6 +504,8 @@ namespace TimTruong.ApiService.Migrations
             modelBuilder.Entity("Core.Models.University", b =>
                 {
                     b.Navigation("Campuses");
+
+                    b.Navigation("Images");
 
                     b.Navigation("Majors");
 
