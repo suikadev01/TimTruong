@@ -15,9 +15,9 @@ public class CampusService : ICampusService
         _logger = logger;
     }
 
-    public async Task<List<CampusDto>> GetAllCampusesAsync(string? search = null, string? city = null, string? university = null)
+    public async Task<List<CampusDto>> GetAllCampusesAsync(string? search = null, string? university = null)
     {
-        _logger.LogInformation("Generating all campuses with filters - Search: {Search}, City: {City}, University: {University}", search, city, university);
+        _logger.LogInformation("Generating all campuses with filters - Search: {Search}, University: {University}", search, university);
 
         var query = _context.Campuses.AsQueryable();
 
@@ -28,12 +28,6 @@ public class CampusService : ICampusService
             query = query.Where(c =>
             c.Name.ToLower().Contains(search) ||
             (c.Address != null && c.Address.ToLower().Contains(search)));
-        }
-
-        // Apply city filter
-        if (!string.IsNullOrWhiteSpace(city))
-        {
-            query = query.Where(c => c.City.ToLower().Contains(city.ToLower()));
         }
 
         // Apply university filter if needed
@@ -52,8 +46,7 @@ public class CampusService : ICampusService
                 Name = c.Name,
                 // TODO: ask Leader why these columns are set as nullable
                 Address = c.Address,
-                District = c.District,
-                City = c.City,
+                OldAddress = c.OldAddress,
                 UniversityId = c.UniversityId,
                 UniversityName = c.University.Name,
                 UniversityCode = c.University.Code
@@ -74,8 +67,7 @@ public class CampusService : ICampusService
                 Id = c.Id,
                 Name = c.Name,
                 Address = c.Address,
-                District = c.District,
-                City = c.City,
+                OldAddress = c.OldAddress,
                 UniversityId = c.UniversityId,
                 UniversityName = c.University.Name,
                 UniversityCode = c.University.Code

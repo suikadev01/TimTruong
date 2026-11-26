@@ -29,14 +29,13 @@ public static class CampusEndpoints
 
     private static async Task<IResult> GetAllCampuses(
         [FromQuery] string? search,
-        [FromQuery] string? city,
         [FromQuery] string? university,
         ICampusService campusService,
         ILogger<ICampusService> logger)
     {
         try
         {
-            var campuses = await campusService.GetAllCampusesAsync(search, city, university);
+            var campuses = await campusService.GetAllCampusesAsync(search, university);
             return Results.Ok(campuses);
         }
         catch (Exception ex)

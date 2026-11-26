@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ChevronRight, MapPin, Search, X } from "lucide-react";
+import { ChevronRight, Search, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import PageMetadata from "@/components/PageMetadata";
 import { RankingBadges } from "@/components/RankingBadges";
@@ -214,17 +214,6 @@ const UniversityCard = ({
 }: {
 	university: UniversityListItem;
 }) => {
-	// Gom các thành phố (loại trùng) để hiển thị vị trí campus.
-	const cities = Array.from(
-		new Set(u.campuses?.map((c) => c.city).filter(Boolean)),
-	);
-	const locationLabel =
-		cities.length === 0
-			? null
-			: cities.length <= 2
-				? cities.join(" · ")
-				: `${cities.slice(0, 2).join(" · ")} +${cities.length - 2}`;
-
 	// Tên viết tắt — luôn hiển thị khi có (kể cả khi trùng mã trường).
 	const shortName = u.shortName || null;
 
@@ -265,7 +254,7 @@ const UniversityCard = ({
 								</p>
 							)}
 
-							{/* Meta: mã trường (nổi bật — dùng để tuyển sinh) + viết tắt + vị trí */}
+							{/* Meta: mã trường (nổi bật — dùng để tuyển sinh) */}
 							<div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-2">
 								<span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
 									Mã trường
@@ -273,12 +262,6 @@ const UniversityCard = ({
 										{u.code}
 									</span>
 								</span>
-								{locationLabel && (
-									<span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-										<MapPin className="h-3.5 w-3.5 flex-shrink-0" />
-										{locationLabel}
-									</span>
-								)}
 							</div>
 
 							{/* Ranking badges (nổi bật — đặt trên các badge khác) */}

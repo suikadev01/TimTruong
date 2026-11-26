@@ -16,14 +16,14 @@ public record UniversityDto
     public string? ImageUrl { get; init; }
     public bool? IsFinanciallyAutonomous { get; init; }
     public bool? HasDormitory { get; init; }
-    public List<CampusLocationDto> Campuses { get; init; } = new();
+    public List<UniversityCampusDto> Campuses { get; init; } = new();
     public List<DormitoryDto> Dormitories { get; init; } = new();
     public List<RankingDto> Rankings { get; init; } = new();
     /// <summary>Facility photos; only filled by the detail endpoints (by id / slug).</summary>
     public List<UniversityImageDto> Images { get; init; } = new();
 }
 
-public record CampusLocationDto(string City, string? District);
+public record UniversityCampusDto(string Name, string? Address, string? OldAddress);
 
 public record DormitoryDto(
     string Name,

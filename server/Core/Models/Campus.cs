@@ -14,32 +14,17 @@ public class Campus
     public int UniversityId { get; set; }
 
     /// <summary>
-    /// Full street address
+    /// Full street address after the 2025 administrative reform (no district level),
+    /// e.g. '227 Nguyễn Văn Cừ, Phường Chợ Quán, TP.HCM'.
     /// </summary>
     [MaxLength(500)]
     public string? Address { get; set; }
 
     /// <summary>
-    /// City or province (e.g., 'TP HCM', 'Hà Nội', 'Đà Nẵng')
+    /// Address before the 2025 reform, which people still know (e.g. '227 Nguyễn Văn Cừ, Quận 5, TP.HCM').
     /// </summary>
-    [Required]
-    [MaxLength(100)]
-    public string City { get; set; } = string.Empty;
-
-    /// <summary>
-    /// District (only for major cities, e.g., 'Quận 5', 'Quận 1')
-    /// </summary>
-    [MaxLength(100)]
-    public string? District { get; set; }
-
     [MaxLength(500)]
     public string? OldAddress { get; set; }
-
-    [MaxLength(100)]
-    public string? OldCity { get; set; }
-
-    [MaxLength(100)]
-    public string? OldDistrict { get; set; }
 
     // Navigation properties
     public University University { get; set; } = null!;

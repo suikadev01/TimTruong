@@ -153,10 +153,8 @@ const UniversityInfoCard = ({
 	university: UniversityListItem;
 }) => {
 	const rankItems = latestPerSystem(u.rankings ?? []);
-	const campusText = u.campuses
-		.map((c) => [c.district, c.city].filter(Boolean).join(", "))
-		.join(" · ");
-	const hasRows = u.campuses.length > 0 || rankItems.length > 0;
+	const campuses = u.campuses.filter((c) => c.address || c.oldAddress);
+	const hasRows = campuses.length > 0 || rankItems.length > 0;
 
 	return (
 		<Card className="border-border bg-card shadow-sm">
@@ -198,9 +196,28 @@ const UniversityInfoCard = ({
 				{/* Dòng có nhãn — địa chỉ, xếp hạng, … (mở rộng về sau) */}
 				{hasRows && (
 					<div className="mt-5 border-t border-border pt-4 space-y-3">
-						{u.campuses.length > 0 && (
+						{campuses.length > 0 && (
 							<InfoRow icon={MapPin} label="Địa chỉ">
-								<p className="text-sm text-muted-foreground">{campusText}</p>
+								<ul className="space-y-2">
+									{campuses.map((c) => (
+										<li key={c.name} className="text-sm">
+											{/* Chỉ ghi tên cơ sở khi trường có nhiều cơ sở */}
+											{campuses.length > 1 && (
+												<span className="font-medium text-foreground">
+													{c.name}:{" "}
+												</span>
+											)}
+											<span className="text-muted-foreground">
+												{c.address ?? c.oldAddress}
+											</span>
+											{c.address && c.oldAddress && (
+												<span className="block text-xs text-muted-foreground/80">
+													Địa chỉ cũ: {c.oldAddress}
+												</span>
+											)}
+										</li>
+									))}
+								</ul>
 							</InfoRow>
 						)}
 						{rankItems.length > 0 && (

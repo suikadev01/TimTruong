@@ -6,7 +6,7 @@ namespace TimTruong.ApiService.Services;
 public interface ICampusService
 {
     // Get all campuses with optional filtering
-    Task<List<CampusDto>> GetAllCampusesAsync(string? search = null, string? city = null, string? university = null);
+    Task<List<CampusDto>> GetAllCampusesAsync(string? search = null, string? university = null);
 
     // Get a single campus by ID
     Task<CampusDto?> GetCampusByIdAsync(int id);

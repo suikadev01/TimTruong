@@ -24,15 +24,18 @@ Run in this order. Majors and admissions look up universities by code, and admis
 | # | Command | Reads | Writes | Removes rows not in CSV |
 |---|---------|-------|--------|-------------------------|
 | 1 | `uv run etl_universities.py` | `data/_shared/universities.csv` | Universities | Universities |
-| 2 | `uv run etl_majors.py [TARGET ...]` | `data/schools/*/majors/{Year}/*-Majors-{Year}.csv` | Majors, MajorYears | MajorYears of that school/year |
-| 3 | `uv run etl_admissions.py [TARGET ...]` | `data/schools/*/admissions/{Year}/*-Admissions-{Year}.csv` | AdmissionRequirements | Requirements of that major/year |
-| 4 | `uv run etl_dormitories.py` | `data/_shared/dormitories.csv` | Dormitories + links | Stale links, orphan dorms |
-| 5 | `uv run etl_rankings.py` | `data/_shared/university_rankings.csv` | UniversityRankings | Orphan rankings |
-| 6 | `uv run etl_images.py [--dry-run]` | `data/_shared/{university,dormitory}_images.csv` | R2 bucket, UniversityImages, DormitoryImages | All image rows not in CSV (R2 objects are kept) |
+| 2 | `uv run etl_campuses.py` | `data/_shared/campuses.csv` | Campuses (upsert by UniCode + Name, keeps Ids) | Campuses (their photos become general university photos) |
+| 3 | `uv run etl_majors.py [TARGET ...]` | `data/schools/*/majors/{Year}/*-Majors-{Year}.csv` | Majors, MajorYears | MajorYears of that school/year |
+| 4 | `uv run etl_admissions.py [TARGET ...]` | `data/schools/*/admissions/{Year}/*-Admissions-{Year}.csv` | AdmissionRequirements | Requirements of that major/year |
+| 5 | `uv run etl_dormitories.py` | `data/_shared/dormitories.csv` | Dormitories + links | Stale links, orphan dorms |
+| 6 | `uv run etl_rankings.py` | `data/_shared/university_rankings.csv` | UniversityRankings | Orphan rankings |
+| 7 | `uv run etl_images.py [--dry-run]` | `data/_shared/{university,dormitory}_images.csv` | R2 bucket, UniversityImages, DormitoryImages | All image rows not in CSV (R2 objects are kept) |
 
 Every loader is idempotent (upsert), so re-running is safe.
 
-> ⚠️ Scripts 1, 4 and 5 take **no arguments**. Even `--help` runs them immediately.
+> ⚠️ Scripts 1, 5 and 6 take **no arguments**. Even `--help` runs them immediately. `etl_campuses.py` refuses arguments, and refuses to run when its CSV is empty but the DB has campuses.
+
+A short Vietnamese run-order cheat sheet is in `etl/README.md`.
 
 ### Facility & dormitory photos (`etl_images.py`)
 
@@ -44,7 +47,7 @@ Photos are stored in Cloudflare R2 (public bucket behind a custom domain). The D
 2. `uv run etl_images.py --dry-run` downloads every `SourceUrl` into `data/_shared/images/` (git-ignored cache) and checks it. If a site blocks the download, the script prints a file name: save the photo yourself under that name and re-run.
 3. `uv run etl_images.py` resizes (max 1600px) and converts to WebP, uploads new photos to `images/<content hash>.webp`, then replaces both tables with the CSV contents.
 
-If any row fails, nothing is written to the DB. Needs `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET` in `.env`, and it runs after `etl_universities.py` and `etl_dormitories.py`.
+If any row fails, nothing is written to the DB. Needs `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET` in `.env`, and it runs after `etl_universities.py`, `etl_campuses.py` and `etl_dormitories.py`.
 
 ## 3. Extract new data from images (image → CSV, Vision-LLM)
 

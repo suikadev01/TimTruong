@@ -24,10 +24,10 @@ public class UniversityService : IUniversityService
         _imageUrlPrefix = storage.Value.PublicBaseUrl.TrimEnd('/') + "/";
     }
 
-    public async Task<List<UniversityDto>> GetAllUniversitiesAsync(string? search = null, string? type = null, string? city = null, bool? hasDormitory = null, string? sort = null)
+    public async Task<List<UniversityDto>> GetAllUniversitiesAsync(string? search = null, string? type = null, bool? hasDormitory = null, string? sort = null)
     {
-        _logger.LogInformation("Getting all universities with filters - Search: {Search}, Type: {Type}, City: {City}, HasDormitory: {HasDormitory}, Sort: {Sort}",
-            search, type, city, hasDormitory, sort);
+        _logger.LogInformation("Getting all universities with filters - Search: {Search}, Type: {Type}, HasDormitory: {HasDormitory}, Sort: {Sort}",
+            search, type, hasDormitory, sort);
 
         var query = _context.Universities
             .Include(u => u.Campuses)
@@ -52,12 +52,6 @@ public class UniversityService : IUniversityService
             }
         }
 
-        // Apply city filter
-        if (!string.IsNullOrWhiteSpace(city))
-        {
-            query = query.Where(u => u.Campuses.Any(c => c.City != null && c.City.ToLower().Contains(city.ToLower())));
-        }
-
         // Apply dormitory filter (only universities that have a KTX)
         if (hasDormitory == true)
         {
@@ -78,7 +72,7 @@ public class UniversityService : IUniversityService
                 ImageUrl = u.ImageUrl,
                 IsFinanciallyAutonomous = u.IsFinanciallyAutonomous,
                 HasDormitory = u.HasDormitory,
-                Campuses = u.Campuses.Select(c => new CampusLocationDto(c.City, c.District)).ToList(),
+                Campuses = u.Campuses.Select(c => new UniversityCampusDto(c.Name, c.Address, c.OldAddress)).ToList(),
                 Rankings = u.Rankings
                     .OrderByDescending(r => r.Year)
                     .ThenBy(r => r.RankingSystem)
@@ -151,7 +145,7 @@ public class UniversityService : IUniversityService
                 ImageUrl = u.ImageUrl,
                 IsFinanciallyAutonomous = u.IsFinanciallyAutonomous,
                 HasDormitory = u.HasDormitory,
-                Campuses = u.Campuses.Select(c => new CampusLocationDto(c.City, c.District)).ToList(),
+                Campuses = u.Campuses.Select(c => new UniversityCampusDto(c.Name, c.Address, c.OldAddress)).ToList(),
                 Dormitories = u.Dormitories
                     .OrderBy(d => d.Name)
                     .Select(d => new DormitoryDto(d.Name, d.Address, d.Note, d.RegistrationUrl,
@@ -206,7 +200,7 @@ public class UniversityService : IUniversityService
                 ImageUrl = u.ImageUrl,
                 IsFinanciallyAutonomous = u.IsFinanciallyAutonomous,
                 HasDormitory = u.HasDormitory,
-                Campuses = u.Campuses.Select(c => new CampusLocationDto(c.City, c.District)).ToList(),
+                Campuses = u.Campuses.Select(c => new UniversityCampusDto(c.Name, c.Address, c.OldAddress)).ToList(),
                 Dormitories = u.Dormitories
                     .OrderBy(d => d.Name)
                     .Select(d => new DormitoryDto(d.Name, d.Address, d.Note, d.RegistrationUrl,
