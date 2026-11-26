@@ -9,4 +9,6 @@ dependencies = [
     "psycopg2-binary>=2.9.12",
     "google-genai>=2.7.0",
     "openai>=1.0.0",
+    "boto3>=1.44.12",
+    "pillow>=13.0.0",
 ]

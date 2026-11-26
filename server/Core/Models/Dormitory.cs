@@ -36,4 +36,6 @@ public class Dormitory
     // Many-to-many: a dormitory can be shared by multiple universities (e.g., KTX Làng ĐH
     // is used by HCMUS, HCMUT, HCMUSSH, etc.)
     public ICollection<University> Universities { get; set; } = new List<University>();
+
+    public ICollection<DormitoryImage> Images { get; set; } = new List<DormitoryImage>();
 }

@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using TimTruong.ApiService.DataAccess;
 using TimTruong.ApiService.Endpoints;
 using TimTruong.ApiService.Features.SubjectCombinations;
+using TimTruong.ApiService.Options;
 using TimTruong.ApiService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +27,11 @@ builder.AddNpgsqlDbContext<ApplicationDbContext>("timtruongdb", settings =>
     settings.ConnectionString ??= builder.Configuration.GetConnectionString("DefaultConnection")
         ?? throw new InvalidOperationException("No connection string found ('timtruongdb' or 'DefaultConnection').");
 });
+
+builder.Services.AddOptions<StorageOptions>()
+    .BindConfiguration(StorageOptions.SectionName)
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
 
 builder.Services.AddProblemDetails();
 builder.Services.AddScoped<IRecommendationService, RecommendationService>();

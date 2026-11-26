@@ -11,6 +11,7 @@ etl/__pycache__/
 etl/data/schools/*/admissions/*/images/
 etl/data/schools/**/*.review.md
 etl/data/schools/*/majors/*/images/
+etl/data/_shared/images/
 
 .playwright-mcp
 

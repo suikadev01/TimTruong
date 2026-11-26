@@ -16,17 +16,27 @@ public record UniversityDto
     public string? ImageUrl { get; init; }
     public bool? IsFinanciallyAutonomous { get; init; }
     public bool? HasDormitory { get; init; }
-    public List<CampusLocationDto> Campuses { get; init; } = new();
+    public List<UniversityCampusDto> Campuses { get; init; } = new();
     public List<DormitoryDto> Dormitories { get; init; } = new();
     public List<RankingDto> Rankings { get; init; } = new();
+    /// <summary>Facility photos; only filled by the detail endpoints (by id / slug).</summary>
+    public List<UniversityImageDto> Images { get; init; } = new();
 }
 
-public record CampusLocationDto(string City, string? District);
+public record UniversityCampusDto(string Name, string? Address, string? OldAddress);
 
 public record DormitoryDto(
     string Name,
     string? Address,
     string? Note,
-    string? RegistrationUrl);
+    string? RegistrationUrl,
+    List<ImageDto> Images);
+
+/// <param name="Url">Public URL of the photo (R2 custom domain).</param>
+/// <param name="SourceUrl">Original URL the photo was taken from, for attribution.</param>
+public record ImageDto(string Url, string? Caption, string SourceUrl);
+
+/// <param name="CampusName">Campus shown in the photo; null = general photo of the university.</param>
+public record UniversityImageDto(string Url, string? Caption, string SourceUrl, string? CampusName);
 
 public record RankingDto(string System, int Year, int RankFrom, int? RankTo, string? SourceUrl);

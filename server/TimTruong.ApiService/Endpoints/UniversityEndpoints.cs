@@ -57,7 +57,6 @@ public static class UniversityEndpoints
     private static async Task<IResult> GetAllUniversities(
         [FromQuery] string? search,
         [FromQuery] string? type,
-        [FromQuery] string? city,
         [FromQuery] bool? hasDormitory,
         [FromQuery] string? sort,
         IUniversityService universityService,
@@ -65,7 +64,7 @@ public static class UniversityEndpoints
     {
         try
         {
-            var universities = await universityService.GetAllUniversitiesAsync(search, type, city, hasDormitory, sort);
+            var universities = await universityService.GetAllUniversitiesAsync(search, type, hasDormitory, sort);
             return Results.Ok(universities);
         }
         catch (Exception ex)

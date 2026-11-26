@@ -13,10 +13,12 @@ export interface UniversityResult {
 	majors: MajorWithRequirements[];
 }
 
-// University list item (for the universities listing page)
-export interface CampusLocation {
-	city: string;
-	district: string | null;
+// A campus (cơ sở) of a university. oldAddress = address before the 2025
+// administrative reform (still the one most people know, e.g. "Quận 5").
+export interface Campus {
+	name: string;
+	address: string | null;
+	oldAddress: string | null;
 }
 
 export interface Dormitory {
@@ -49,7 +51,7 @@ export interface UniversityListItem {
 	imageUrl: string | null;
 	isFinanciallyAutonomous: boolean | null;
 	hasDormitory: boolean | null;
-	campuses: CampusLocation[];
+	campuses: Campus[];
 	dormitories: Dormitory[];
 	rankings: Ranking[];
 }

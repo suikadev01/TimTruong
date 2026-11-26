@@ -20,6 +20,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<AdmissionRequirement> AdmissionRequirements { get; set; }
     public DbSet<Dormitory> Dormitories { get; set; }
     public DbSet<UniversityRanking> UniversityRankings { get; set; }
+    public DbSet<UniversityImage> UniversityImages { get; set; }
+    public DbSet<DormitoryImage> DormitoryImages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -63,6 +65,35 @@ public class ApplicationDbContext : DbContext
             .HasOne(my => my.Major)
             .WithMany(m => m.Years)
             .HasForeignKey(my => my.MajorId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Facility / dormitory photos (R2 object keys). The same photo can't be listed twice
+        // for one owner; the ETL (etl_images.py) relies on this to catch duplicate CSV rows.
+        modelBuilder.Entity<UniversityImage>()
+            .HasIndex(i => new { i.UniversityId, i.Key })
+            .IsUnique();
+
+        modelBuilder.Entity<UniversityImage>()
+            .HasOne(i => i.University)
+            .WithMany(u => u.Images)
+            .HasForeignKey(i => i.UniversityId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Deleting a campus keeps its photos as general university photos.
+        modelBuilder.Entity<UniversityImage>()
+            .HasOne(i => i.Campus)
+            .WithMany()
+            .HasForeignKey(i => i.CampusId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<DormitoryImage>()
+            .HasIndex(i => new { i.DormitoryId, i.Key })
+            .IsUnique();
+
+        modelBuilder.Entity<DormitoryImage>()
+            .HasOne(i => i.Dormitory)
+            .WithMany(d => d.Images)
+            .HasForeignKey(i => i.DormitoryId)
             .OnDelete(DeleteBehavior.Cascade);
 
         // Seed data
